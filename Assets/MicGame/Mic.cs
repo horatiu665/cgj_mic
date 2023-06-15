@@ -50,6 +50,9 @@ public class Mic : MonoBehaviour
 
     public float smoothLoudness = 0f;
 
+    [Header("Target frames")]
+    public int targetFps = 60;
+    
     public void SimpleStartMic(int index)
     {
         PrintMicDevices();
@@ -98,6 +101,10 @@ public class Mic : MonoBehaviour
         }
     }
 
+    private void Awake()
+    {
+        Application.targetFrameRate = (int) targetFps;
+    }
 
     private IEnumerator Start()
     {

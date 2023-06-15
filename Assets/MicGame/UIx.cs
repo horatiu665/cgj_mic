@@ -7,7 +7,8 @@ using UnityEngine;
 public class UIx : MonoBehaviour
 {
     public TMP_InputField micLoudInput;
-
+    public RectTransform micInputVisualizer;
+    
     private void OnEnable()
     {
         micLoudInput.onValueChanged.AddListener(OnMicLoudInputChanged);
@@ -17,6 +18,14 @@ public class UIx : MonoBehaviour
     private void OnDisable()
     {
         micLoudInput.onValueChanged.RemoveListener(OnMicLoudInputChanged);
+    }
+
+    private void Update()
+    {
+        micInputVisualizer.transform.localScale =
+            new Vector3(
+                Mathf.Lerp(0.05f, 1f, Mic.instance.smoothLoudness)
+                , 1, 1);
     }
 
     private void OnMicLoudInputChanged(string arg0)

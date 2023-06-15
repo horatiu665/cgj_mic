@@ -22,7 +22,7 @@ public class Can : MonoBehaviour
         bombs.Add(bomb);
         bomb.cannon = this;
 
-        bomb.AddForce(direction);
+        bomb.Shoot(direction);
 
         return bomb;
     }
