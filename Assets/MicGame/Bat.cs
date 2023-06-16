@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using ToyBoxHHH;
 using UnityEngine;
 
 public class Bat : MonoBehaviour
@@ -26,12 +27,31 @@ public class Bat : MonoBehaviour
     public float maxBombForce = 10f;
 
     public ParticleSystem shootParticles;
-    
+
     [Header("Shoot bomb")]
     public Transform shootDirectionLeft;
 
     public Transform shootDirectionRight;
 
+
+    public SmartSound hitSound;
+    public SmartSound treeHitSound;
+
+    private void OnEnable()
+    {
+        Tre.OnTreeBlowup += OnTreeBlowup;
+    }
+
+    private void OnDisable()
+    {
+        Tre.OnTreeBlowup -= OnTreeBlowup;
+    }
+
+    private void OnTreeBlowup(Vector3 position)
+    {
+        if (treeHitSound != null)
+            treeHitSound.Play();
+    }
 
     public void SetRotation(float angle01)
     {
@@ -62,17 +82,18 @@ public class Bat : MonoBehaviour
 
         var collisionPoint = other.contacts[0].point;
         var collisionVelocity = other.relativeVelocity;
+        var ballPosition = bom.transform.position;
 
         if (shootParticles != null)
         {
-            var s = Instantiate(shootParticles, collisionPoint, Quaternion.identity);
+            var s = Instantiate(shootParticles, ballPosition, Quaternion.identity);
         }
-        
+
         Debug.Log("Hit! bat speed:" + curSpeedSmooth);
 
         // 01 point between the two directions
-        var distLeft = (collisionPoint - shootDirectionLeft.position);
-        var distRight = (collisionPoint - shootDirectionRight.position);
+        var distLeft = (ballPosition - shootDirectionLeft.position);
+        var distRight = (ballPosition - shootDirectionRight.position);
 
         // project the distances onto the left->right vector.
         var leftRight = shootDirectionRight.position - shootDirectionLeft.position;
@@ -88,12 +109,15 @@ public class Bat : MonoBehaviour
         var shootDirRight = shootDirectionRight.forward;
         var finalShootDir = Vector3.Lerp(shootDirLeft, shootDirRight, propLeft);
 
-        Debug.DrawRay(collisionPoint, finalShootDir * 10f, Color.red, 1f);
+        Debug.DrawRay(ballPosition, finalShootDir * 10f, Color.red, 1f);
 
         var shootForce =
             batSpeedToBombForce.Evaluate(curSpeedSmooth / maxBatSpeed)
             * maxBombForce;
         bom.Shoot(finalShootDir * shootForce);
         bom.rb.useGravity = true;
+
+        if (hitSound != null)
+            hitSound.Play();
     }
 }

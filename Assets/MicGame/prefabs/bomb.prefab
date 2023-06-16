@@ -64,6 +64,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cannon: {fileID: 0}
   explosion: {fileID: 1742334262158620438, guid: 9d332a877e1b54e05af0a15b28ece1cf, type: 3}
+  force: 500
 --- !u!1 &1959688846343580409
 GameObject:
   m_ObjectHideFlags: 0
